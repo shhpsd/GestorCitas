@@ -1,14 +1,27 @@
-import {useState} from 'react';
+import { useState,useEffect } from 'react';
 import Error from './Error'
-function Formulario({pacientes,setPacientes}) {
+import {toast} from 'react-hot-toast';
+function Formulario({pacientes,setPacientes,paciente,setPaciente}) {
 
   const [name, setName] = useState('');
   const [propietario, setNamePropietario] = useState('');
   const [email, setEmail] = useState('');
+  const [telefono, setTelefono] = useState('');
   const [data,setData] = useState('');
   const [sintomas,setSintomas] = useState('');
   
   const [error,setError] = useState(false);
+  
+    useEffect(() => {
+        if(Object.keys(paciente).length > 0){
+          setName(paciente.name);
+          setNamePropietario(paciente.propietario);
+          setEmail(paciente.email);
+          setTelefono(paciente.telefono);
+          setData(paciente.data);
+          setSintomas(paciente.sintomas); 
+        }
+      },[paciente]);
 
   const generarId=()=>{
     const random = Math.random().toString(36).substring(2);
@@ -18,7 +31,7 @@ function Formulario({pacientes,setPacientes}) {
   }
   const handleSubmit =(e)=>{
     e.preventDefault();
-    if([name,propietario,email,data,sintomas].includes('')){
+    if([name,propietario,email,telefono,data,sintomas].includes('')){
       
       setError(true)
       return
@@ -30,17 +43,39 @@ function Formulario({pacientes,setPacientes}) {
         name,
         propietario,
         email,
+        telefono,
         data,
         sintomas,
-        id:generarId()
+        
+      }
+
+      if(paciente.id){
+
+        //EDITANDO EL REGISTRO
+       objetoPaciente.id = paciente.id;
+
+        const pacientesActualizados = pacientes.map(pacienteState => pacienteState.id === 
+        paciente.id ? objetoPaciente : pacienteState)
+
+        setPacientes(pacientesActualizados)
+        toast.success('Paciente Actualizado');
+        setPaciente({});
+
+      }
+      else{
+        // NUEVO REGISTRO
+        objetoPaciente.id = generarId();
+        setPacientes([...pacientes, objetoPaciente])
+        toast.success("Paciente Añadido");
+        
       }
       
-      setPacientes([...pacientes, objetoPaciente])
 
       //REINICIAR EL FORM 
       setName('')
       setNamePropietario('')
       setEmail('')
+      setTelefono('')
       setData('')
       setSintomas('')
      
@@ -74,13 +109,24 @@ function Formulario({pacientes,setPacientes}) {
           onChange = { (e) => setNamePropietario(e.target.value)}
           />
         </div>
-        <div className="mb-5">
+        <div className="mb-5 relative w-full mr-3 revue-form-group">
           <label htmlFor="email" className="block text-gray-700 uppercase font-bold">
             Correo Electronico
             </label>
+            
           <input id="email" type="email" placeholder="correoelectronico@gmail.com" className="w-full border-2 p-2 mt-2 rounded-md placeholder-slate-400"
           value={email}
           onChange = { (e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="mb-5 relative w-full mr-3 revue-form-group">
+          <label htmlFor="telefono" className="block text-gray-700 uppercase font-bold">
+            Telefono
+            </label>
+            
+          <input id="telefono" type="text" placeholder="000 000 000" className="w-full border-2 p-2 mt-2 rounded-md placeholder-slate-400"
+          value={telefono}
+          onChange = { (e) => setTelefono(e.target.value)}
           />
         </div>
         <div className="mb-5">
@@ -102,7 +148,8 @@ function Formulario({pacientes,setPacientes}) {
           />
         </div>
 
-        <input type="submit" className="bg-slate-600 w-full text-white hover:bg-slate-500 cursor-pointer uppercase p-3 transition-all" value="Agregar Paciente"/>
+        <input type="submit" className="bg-slate-600 w-full text-white hover:bg-slate-500 cursor-pointer uppercase p-3 transition-all" 
+        value={paciente.id ? "Editar paciente" : "Agregar paciente"} />
       </form>
     </div>
   )
