@@ -32,12 +32,12 @@ function Paciente({paciente, setPaciente, eliminarPaciente}) {
             </p>
             <div className="flex justify-between mt-10">
                 <button type="button" 
-                className="py-2 px-10 bg-slate-600 hover:bg-slate-500 text-white font-bold uppercase rounded-lg"
+                className="py-2 lg:px-10 px-3 bg-slate-600 hover:bg-slate-500 text-white font-bold uppercase rounded-lg"
                 onClick={() => setPaciente(paciente)}
                 >Editar
                 </button>
                 <button type="button"
-                className="py-2 px-10 bg-red-600 hover:bg-red-500 text-white font-bold uppercase rounded-lg"
+                className="py-2 lg:px-10 px-3 bg-red-600 hover:bg-red-500 text-white font-bold uppercase rounded-lg"
                 onClick={handleEliminar}
                 >Eliminar
                 </button>
